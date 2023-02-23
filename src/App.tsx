@@ -8,6 +8,21 @@ import { Column } from "./components/Column";
 function App() {
   const [isFirstColumn, setIsFirstColumn] = useState(true);
 
+  const moveCardHandler = (dragIndex: number, hoverIndex: number) => {
+    const dragItem = items[dragIndex];
+
+    if (dragItem) {
+      setItems((items) => {
+        const copiedItems = [...items];
+
+        const prevItem = copiedItems.splice(hoverIndex, 1, dragItem);
+        copiedItems.splice(dragIndex, 1, prevItem[0]);
+
+        return copiedItems;
+      });
+    }
+  };
+
   const [items, setItems] = useState([
     { id: 1, name: "Item 1", column: "Column 1" },
     { id: 2, name: "Item 2", column: "Column 1" },
@@ -17,8 +32,14 @@ function App() {
   const returnItemsForColumn = (column: string) => {
     return items
       .filter((item) => item.column === column)
-      .map((item) => (
-        <MovableItem key={item.id} name={item.name} setItems={setItems} />
+      .map((item, index) => (
+        <MovableItem
+          key={item.id}
+          name={item.name}
+          setItems={setItems}
+          index={index}
+          moveCardHandler={moveCardHandler}
+        />
       ));
   };
 
@@ -28,7 +49,7 @@ function App() {
         <Column title="Column 1" className="column first-column">
           {returnItemsForColumn("Column 1")}
         </Column>
-        
+
         <Column title="Column 2" className="column second-column">
           {returnItemsForColumn("Column 2")}
         </Column>
