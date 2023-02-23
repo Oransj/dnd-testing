@@ -9,12 +9,19 @@ type movableItemProps = {
 };
 
 export const MovableItem = (movableItemProps: movableItemProps) => {
+  /**
+   * Changes the column of an item.
+   *
+   * @param currentItem The item to change the column of.
+   * @param columnName The name of the column to change the item to.
+   */
   const changeItemColumn = (currentItem: any, columnName: string) => {
     movableItemProps.setItems((items: any) => {
+      //For each item, return a new array with the specified item's column changed to the specified column.
       return items.map((item: any) => {
         return {
-          ...item,
-          column: item.name === currentItem.name ? columnName : item.column,
+          ...item, //Spread the item's properties. Meaning that the item's properties will be copied to the new object.
+          column: item.name === currentItem.name ? columnName : item.column, //If the item's name is the same as the current item's name, change the column to the specified column.
         };
       });
     });
@@ -64,11 +71,14 @@ export const MovableItem = (movableItemProps: movableItemProps) => {
     },
   });
 
+  /**
+   * The drop handler.
+   */
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "movableItem",
     item: { name: movableItemProps.name, index: movableItemProps.index },
     end: (item, monitor) => {
-      const dropResult: { name: string } | null = monitor.getDropResult();
+      const dropResult: { name: string } | null = monitor.getDropResult(); //the item is an object that only have the name property.
       if (dropResult && dropResult.name === "Column 1") {
         changeItemColumn(item, "Column 1");
       } else {
@@ -76,7 +86,7 @@ export const MovableItem = (movableItemProps: movableItemProps) => {
       }
     },
     collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
+      isDragging: !!monitor.isDragging(), //!! is a double negation. It converts the value to a boolean.
     }),
   }));
 

@@ -8,15 +8,21 @@ import { Column } from "./components/Column";
 function App() {
   const [isFirstColumn, setIsFirstColumn] = useState(true);
 
-  const moveCardHandler = (dragIndex: number, hoverIndex: number) => {
+  /**
+   * Handles moving a card over another card.
+   *
+   * @param dragIndex The index of the card being dragged.
+   * @param hoverIndex  The index of the card being hovered over.
+   */
+  const moveCard = (dragIndex: number, hoverIndex: number) => {
     const dragItem = items[dragIndex];
 
     if (dragItem) {
       setItems((items) => {
-        const copiedItems = [...items];
+        const copiedItems = [...items]; //Copies the items array.
 
-        const prevItem = copiedItems.splice(hoverIndex, 1, dragItem);
-        copiedItems.splice(dragIndex, 1, prevItem[0]);
+        const prevItem = copiedItems.splice(hoverIndex, 1, dragItem); //Removes the item at the hoverIndex and returns it.
+        copiedItems.splice(dragIndex, 1, prevItem[0]); //Removes the item at the dragIndex and replaces it with the item that was removed at the hoverIndex.
 
         return copiedItems;
       });
@@ -29,18 +35,29 @@ function App() {
     { id: 3, name: "Item 3", column: "Column 1" },
   ]);
 
+  /**
+   * Returns items that is in a specific column.
+   *
+   * @param column The column to return items for.
+   * @returns The items in the column.
+   */
   const returnItemsForColumn = (column: string) => {
     return items
       .filter((item) => item.column === column)
-      .map((item, index) => (
-        <MovableItem
-          key={item.id}
-          name={item.name}
-          setItems={setItems}
-          index={index}
-          moveCardHandler={moveCardHandler}
-        />
-      ));
+      .map(
+        (
+          item,
+          index //Filters out items that are not in the column and maps them.
+        ) => (
+          <MovableItem
+            key={item.id}
+            name={item.name}
+            setItems={setItems}
+            index={index}
+            moveCardHandler={moveCard}
+          />
+        )
+      );
   };
 
   return (
