@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { MovableItem } from "./components/MovableItem";
-import "./App.css";
-import { Column } from "./components/Column";
+import { Column } from "./Column";
+import { MovableItem } from "./MovableItem";
 
-function App() {
-  const [isFirstColumn, setIsFirstColumn] = useState(true);
+type cardProps = {
+    id: string,
+    name: string,
+    column: string
+}
+
+export default function card(props: cardProps) {
 
   /**
    * Handles moving a card over another card.
@@ -29,11 +31,7 @@ function App() {
     }
   };
 
-  const [items, setItems] = useState([
-    { id: 1, name: "Item 1", column: "Column 1" },
-    { id: 2, name: "Item 2", column: "Column 1" },
-    { id: 3, name: "Item 3", column: "Column 1" },
-  ]);
+
 
   /**
    * Returns items that is in a specific column.
@@ -62,17 +60,13 @@ function App() {
 
   return (
     <div className="container">
-      <DndProvider backend={HTML5Backend}>
-        <Column title="Column 1" className="column first-column">
-          {returnItemsForColumn("Column 1")}
-        </Column>
+      <Column title="Column 1" className="column first-column">
+        {returnItemsForColumn("Column 1")}
+      </Column>
 
-        <Column title="Column 2" className="column second-column">
-          {returnItemsForColumn("Column 2")}
-        </Column>
-      </DndProvider>
+      <Column title="Column 2" className="column second-column">
+        {returnItemsForColumn("Column 2")}
+      </Column>
     </div>
   );
 }
-
-export default App;
