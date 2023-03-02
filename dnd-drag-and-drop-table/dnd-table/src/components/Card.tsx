@@ -17,6 +17,7 @@ export interface CardProps {
   text: string;
   moveCard: (id: string, to: number) => void;
   findCard: (id: string) => { index: number };
+  setCards: (cards: any) => void;
 }
 
 interface Item {
@@ -29,6 +30,8 @@ export const Card: FC<CardProps> = memo(function Card({
   text,
   moveCard,
   findCard,
+  setCards,
+
 }) {
   const originalIndex = findCard(id).index;
   const [{ isDragging }, drag] = useDrag(
@@ -41,13 +44,35 @@ export const Card: FC<CardProps> = memo(function Card({
       end: (item, monitor) => {
         const { id: droppedId, originalIndex } = item;
         const didDrop = monitor.didDrop();
+        const dropResult: {name: string} | null = monitor.getDropResult();
         if (!didDrop) {
           moveCard(droppedId, originalIndex);
+        }
+        else if(dropResult) {
+          changeCardColumn(dropResult, dropResult.name);
         }
       },
     }),
     [id, originalIndex, moveCard]
   );
+
+  /**
+   * Changes the column of an item.
+   *
+   * @param currentItem The item to change the column of.
+   * @param columnName The name of the column to change the item to.
+   */
+
+  const changeCardColumn = (currentItem: any, columnName: string) => {
+    setCards((cards: any) => {
+        cards.map((card: any) => {
+            return {
+                ...card,
+                column: card.name === currentItem.name ? columnName : card.column,
+            }
+        })
+    });
+}
 
   const [, drop] = useDrop(
     () => ({
@@ -62,7 +87,7 @@ export const Card: FC<CardProps> = memo(function Card({
     [findCard, moveCard]
   );
 
-  const opacity = isDragging ? 0 : 1;
+  const opacity = isDragging ? 0.4 : 1;
   return (
     <div ref={(node) => drag(drop(node))} style={{ ...style, opacity }}>
       {text}
